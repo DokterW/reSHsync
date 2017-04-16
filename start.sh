@@ -2,7 +2,7 @@
 # reSHsync v0.1
 # Made by Dr. Waldijk
 # A simple manager for your Resilio Sync folders.
-# Read the README.md for more info.
+# Read the README.md for more info, but you will find more info here below.
 # By running this script you agree to the license terms.
 # Config ----------------------------------------------------------------------------
 # These configurations can be changed if you want to run this script from a specific location and use different filenames.
@@ -12,12 +12,22 @@ RESHNAM="reSHsync"
 RESHFIL="reSH.csv"
 RESHCRP="reSH.csv.nc"
 RESHESH="reSH.nc"
+# Uncomment, and comment the IFs below, to specify your own location without using a file.
 RESHLOC=""
+#if [ ! -e $HOME/.dokter ]; then
+#    mkdir $HOME/.dokter
+#fi
+#if [ ! -e $HOME/.dokter/reSHsync ]; then
+#    mkdir $HOME/.dokter/reSHsync
+#fi
 #if [ ! -e $HOME/.dokter/reSHsync/reshloc ]; then
-    #statements
+#    touch $HOME/.dokter/reSHsync/reshloc
+#    read -s -p "Enter disk image location: " RESHLOC
+#    echo "$RESHLOC" > $HOME/.dokter/reSHsync/reshloc
 #else
 #    RESHLOC=$(cat $HOME/.dokter/reSHsync/reshloc)
 #fi
+# Crypto ----------------------------------------------------------------------------
 # Supported algorithms: cast-128, gost, rijndael-128, twofish, arcfour, cast-256
 #                       loki97, rijndael-192, saferplus, wake, blowfish-compat, des
 #                       rijndael-256, serpent, xtea, blowfish, enigma, rc2b, tripledes
