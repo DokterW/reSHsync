@@ -13,13 +13,13 @@ RESHFIL="reSH.csv"
 RESHCRP="reSH.csv.nc"
 RESHESH="reSH.nc"
 # Uncomment, and comment the IFs below, to specify your own location without using a file.
-RESHLOC=""
-#if [ ! -e $HOME/.dokter ]; then
-#    mkdir $HOME/.dokter
-#fi
-#if [ ! -e $HOME/.dokter/reSHsync ]; then
-#    mkdir $HOME/.dokter/reSHsync
-#fi
+RESHLOC="$HOME/.dokter/reSHsync/"
+if [ ! -e $HOME/.dokter ]; then
+    mkdir $HOME/.dokter
+fi
+if [ ! -e $HOME/.dokter/reSHsync ]; then
+    mkdir $HOME/.dokter/reSHsync
+fi
 #if [ ! -e $HOME/.dokter/reSHsync/reshloc ]; then
 #    touch $HOME/.dokter/reSHsync/reshloc
 #    read -s -p "Enter disk image location: " RESHLOC
@@ -115,7 +115,7 @@ RESHLOG=1
 while :; do
     clear
     if [ "$RESHLOG" = 1 ]; then
-        if [ -e $HOME/.dokter/resh/$RESHESH ]; then
+        if [ -e $HOME/.dokter/reSHsync/$RESHESH ]; then
             echo "$RESHNAM v$RESHVER"
             echo ""
             read -p "(L)og in, (C)hange password or (Q)uit: " -s -n1 RESHKEY
@@ -126,15 +126,23 @@ while :; do
                         echo "$RESHNAM v$RESHVER"
                         echo ""
                         read -s -p "      Enter password: " RESHPWD
+                        echo $RESHPWD
                         read -s -p "Enter password again: " RESHDWP
+                        echo $RESHDWP
+                        read -p "Press (the infamous) any key to continue... " -n1 -s
                         if [ "$RESHPWD" = "$RESHDWP" ]; then
-                            mcrypt -qbd -a $RESHALG -h $RESHHSH $HOME/.dokter/resh/$RESHESH -k $RESHPWD --flush
-                            shred -uz $RESHLOC$RESHCRP
-                            RESHPDC=$(cat $HOME/.dokter/resh/reSH)
-                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/resh/reSH -k $RESHPWD --flush
-                            shred -uz $HOME/.dokter/resh/reSH
+                            mcrypt -qbd -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/$RESHESH -k $RESHPWD --flush
+#                            shred -uz $RESHLOC$RESHESH
+                            read -p "Press (the infamous) any key to continue... " -n1 -s
+                            RESHPDC=$(cat $HOME/.dokter/reSHsync/reSH)
+                            echo $RESHPDC
+                            read -p "Press (the infamous) any key to continue... " -n1 -s
+#                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/reSH -k $RESHPWD --flush
+                            shred -uz $HOME/.dokter/reSHsync/reSH
+                            read -p "Press (the infamous) any key to continue... " -n1 -s
                             if [ "$RESHPWD" = "$RESHPDC" ]; then
                                 RESHLOG=0
+                                break
                             else
                                 reshpmm
                             fi
@@ -148,22 +156,25 @@ while :; do
                         clear
                         echo "$RESHNAM v$RESHVER"
                         echo ""
-                        read -s -p "      Enter old password: " RESHPWD
-                        read -s -p "Enter old password again: " RESHDWP
-                        read -s -p "      Enter new password: " RESHPWDX
-                        read -s -p "Enter new password again: " RESHDWPX
+                        read -p "      Enter old password: " -s RESHPWD
+                        echo ""
+                        read -p "Enter old password again: " -s RESHDWP
+                        echo ""
+                        read -p "      Enter new password: " -s RESHPWDX
+                        echo ""
+                        read -p "Enter new password again: " -s RESHDWPX
                         if [ "$RESHPWD" = "$RESHDWP" ]; then
-                            mcrypt -qbd -a $RESHALG -h $RESHHSH $HOME/.dokter/resh/$RESHESH -k $RESHPWD --flush
+                            mcrypt -qbd -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/$RESHESH -k $RESHPWD --flush
                             shred -uz $RESHLOC$RESHCRP
-                            RESHPDC=$(cat $HOME/.dokter/resh/reSH)
-                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/resh/reSH -k $RESHPWD --flush
-                            shred -uz $HOME/.dokter/resh/reSH
+                            RESHPDC=$(cat $HOME/.dokter/reSHsync/reSH)
+                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/reSH -k $RESHPWD --flush
+                            shred -uz $HOME/.dokter/reSHsync/reSH
                             if [ "$RESHPWD" = "$RESHPDC" ]; then
                                 if [ "$RESHPWDX" = "$RESHDWPX" ]; then
-                                    echo "$RESHPWDX" > $HOME/.dokter/resh/reSH
+                                    echo "$RESHPWDX" > $HOME/.dokter/reSHsync/reSH
                                     shred -uz $RESHLOC$RESHCRP
-                                    mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/resh/reSH -k $RESHPWD --flush
-                                    shred -uz $HOME/.dokter/resh/reSH
+                                    mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/reSH -k $RESHPWD --flush
+                                    shred -uz $HOME/.dokter/reSHsync/reSH
                                     reshclr
                                     RESHPWD=""
                                 else
@@ -189,7 +200,7 @@ while :; do
                 reshclr
                 RESHPWD=""
             fi
-        elif [ ! -e $HOME/.dokter/resh/$RESHESH ]; then
+        elif [ ! -e $HOME/.dokter/reSHsync/$RESHESH ]; then
             echo "$RESHNAM v$RESHVER"
             echo ""
             read -p "(C)reate password or (Q)uit: " -s -n1 RESHKEY
@@ -199,13 +210,14 @@ while :; do
                         clear
                         echo "$RESHNAM v$RESHVER"
                         echo ""
-                        read -s -p "      Enter password: " RESHPWD
-                        read -s -p "Enter password again: " RESHDWP
+                        read -p "      Enter password: " -s RESHPWD
+                        echo ""
+                        read -p "Enter password again: " -s RESHDWP
                         if [ "$RESHPWD" = "$RESHDWP" ]; then
-                            echo "$RESHPWD" > $HOME/.dokter/resh/reSH
-                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/resh/reSH -k $RESHPWD --flush
-                            shred -uz $HOME/.dokter/resh/reSH
-                            reshclr
+                            echo "$RESHPWD" > $HOME/.dokter/reSHsync/reSH
+                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/reSH -k $RESHPWD --flush
+                            shred -uz $HOME/.dokter/reSHsync/reSH
+#                            reshclr
                             RESHLOG=0
                             break
                         else
@@ -214,7 +226,8 @@ while :; do
                     done
                 ;;
                 [qQ])
-                    reshclr
+                    clear
+                    reshclear
                     break
                 ;;
             esac
@@ -237,8 +250,8 @@ while :; do
                 read -p "Read/Write: " RESHREW
                 read -p " Encrypted: " RESHENT
                 RESHCSV=$(echo $RESHFOL,$RESHRED,$RESHREW,$RESHENT)
-                echo ""
-                read -s -p "Enter password: " RESHPWD
+#                echo ""
+#                read -s -p "Enter password: " RESHPWD
                 if [ -e $RESHLOC$RESHCRP ]; then
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     shred -uz $RESHLOC$RESHCRP
@@ -255,9 +268,9 @@ while :; do
             [rR])
                 clear
                 if [ -e $RESHLOC$RESHCRP ]; then
-                    echo "$RESHNAM v$RESHVER"
-                    echo ""
-                    read -s -p "Enter password: " RESHPWD
+#                    echo "$RESHNAM v$RESHVER"
+#                    echo ""
+#                    read -s -p "Enter password: " RESHPWD
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     RESHMEM=$(cat $RESHLOC$RESHFIL)
                     RESHCNT=$(cat $RESHLOC$RESHFIL | wc -l)
@@ -338,10 +351,10 @@ while :; do
             ;;
             [eE])
                 if [ -e $RESHLOC$RESHCRP ]; then
-                    clear
-                    echo "$RESHNAM v$RESHVER"
-                    echo ""
-                    read -s -p "Enter password: " RESHPWD
+#                    clear
+#                    echo "$RESHNAM v$RESHVER"
+#                    echo ""
+#                    read -s -p "Enter password: " RESHPWD
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     RESHMEM=$(cat $RESHLOC$RESHFIL)
                     RESHCNT=$(cat $RESHLOC$RESHFIL | wc -l)
@@ -434,9 +447,9 @@ while :; do
             [dD])
                 clear
                 if [ -e $RESHLOC$RESHCRP ]; then
-                    echo "$RESHNAM v$RESHVER"
-                    echo ""
-                    read -s -p "Enter password: " RESHPWD
+#                    echo "$RESHNAM v$RESHVER"
+#                    echo ""
+#                    read -s -p "Enter password: " RESHPWD
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     RESHMEM=$(cat $RESHLOC$RESHFIL)
                     RESHCNT=$(cat $RESHLOC$RESHFIL | wc -l)
@@ -477,7 +490,7 @@ while :; do
             ;;
             [qQ])
                 clear
-                reshclear
+                reshclr
                 RESHLOG=1
                 continue
             ;;
