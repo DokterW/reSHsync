@@ -1,5 +1,5 @@
 #!/bin/bash
-# reSHsync v0.1
+# reSHsync v0.2
 # Made by Dr. Waldijk
 # A simple manager for your Resilio Sync folders.
 # Read the README.md for more info, but you will find more info here below.
@@ -7,7 +7,7 @@
 # Config ----------------------------------------------------------------------------
 # These configurations can be changed if you want to run this script from a specific location and use different filenames.
 # It should be obvious how, but consult the README.md if you are unsure.
-RESHVER="0.1"
+RESHVER="0.2"
 RESHNAM="reSHsync"
 RESHFIL="reSH.csv"
 RESHCRP="reSH.csv.nc"
@@ -126,20 +126,12 @@ while :; do
                         echo "$RESHNAM v$RESHVER"
                         echo ""
                         read -s -p "      Enter password: " RESHPWD
-                        echo $RESHPWD
+                        echo ""
                         read -s -p "Enter password again: " RESHDWP
-                        echo $RESHDWP
-                        read -p "Press (the infamous) any key to continue... " -n1 -s
                         if [ "$RESHPWD" = "$RESHDWP" ]; then
                             mcrypt -qbd -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/$RESHESH -k $RESHPWD --flush
-#                            shred -uz $RESHLOC$RESHESH
-                            read -p "Press (the infamous) any key to continue... " -n1 -s
                             RESHPDC=$(cat $HOME/.dokter/reSHsync/reSH)
-                            echo $RESHPDC
-                            read -p "Press (the infamous) any key to continue... " -n1 -s
-#                            mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/reSH -k $RESHPWD --flush
                             shred -uz $HOME/.dokter/reSHsync/reSH
-                            read -p "Press (the infamous) any key to continue... " -n1 -s
                             if [ "$RESHPWD" = "$RESHPDC" ]; then
                                 RESHLOG=0
                                 break
@@ -217,7 +209,6 @@ while :; do
                             echo "$RESHPWD" > $HOME/.dokter/reSHsync/reSH
                             mcrypt -qb -a $RESHALG -h $RESHHSH $HOME/.dokter/reSHsync/reSH -k $RESHPWD --flush
                             shred -uz $HOME/.dokter/reSHsync/reSH
-#                            reshclr
                             RESHLOG=0
                             break
                         else
@@ -250,8 +241,6 @@ while :; do
                 read -p "Read/Write: " RESHREW
                 read -p " Encrypted: " RESHENT
                 RESHCSV=$(echo $RESHFOL,$RESHRED,$RESHREW,$RESHENT)
-#                echo ""
-#                read -s -p "Enter password: " RESHPWD
                 if [ -e $RESHLOC$RESHCRP ]; then
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     shred -uz $RESHLOC$RESHCRP
@@ -268,9 +257,6 @@ while :; do
             [rR])
                 clear
                 if [ -e $RESHLOC$RESHCRP ]; then
-#                    echo "$RESHNAM v$RESHVER"
-#                    echo ""
-#                    read -s -p "Enter password: " RESHPWD
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     RESHMEM=$(cat $RESHLOC$RESHFIL)
                     RESHCNT=$(cat $RESHLOC$RESHFIL | wc -l)
@@ -351,10 +337,6 @@ while :; do
             ;;
             [eE])
                 if [ -e $RESHLOC$RESHCRP ]; then
-#                    clear
-#                    echo "$RESHNAM v$RESHVER"
-#                    echo ""
-#                    read -s -p "Enter password: " RESHPWD
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     RESHMEM=$(cat $RESHLOC$RESHFIL)
                     RESHCNT=$(cat $RESHLOC$RESHFIL | wc -l)
@@ -429,7 +411,6 @@ while :; do
                                     echo "$RESHMEM" > $RESHLOC$RESHFIL
                                     mcrypt -qb -a $RESHALG -h $RESHHSH $RESHLOC$RESHFIL -k $RESHPWD --flush
                                     shred -uz $RESHLOC$RESHFIL
-                                    #reshclr
                                 ;;
                                 bb|BB)
                                     reshclr
@@ -447,9 +428,6 @@ while :; do
             [dD])
                 clear
                 if [ -e $RESHLOC$RESHCRP ]; then
-#                    echo "$RESHNAM v$RESHVER"
-#                    echo ""
-#                    read -s -p "Enter password: " RESHPWD
                     mcrypt -qbd -a $RESHALG -h $RESHHSH $RESHLOC$RESHCRP -k $RESHPWD --flush
                     RESHMEM=$(cat $RESHLOC$RESHFIL)
                     RESHCNT=$(cat $RESHLOC$RESHFIL | wc -l)
