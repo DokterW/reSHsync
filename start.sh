@@ -22,7 +22,7 @@ if [ ! -e $HOME/.dokter/reSHsync ]; then
 fi
 #if [ ! -e $HOME/.dokter/reSHsync/reshloc ]; then
 #    touch $HOME/.dokter/reSHsync/reshloc
-#    read -s -p "Enter disk image location: " RESHLOC
+#    read -p "Enter disk image location: " RESHLOC
 #    echo "$RESHLOC" > $HOME/.dokter/reSHsync/reshloc
 #else
 #    RESHLOC=$(cat $HOME/.dokter/reSHsync/reshloc)
